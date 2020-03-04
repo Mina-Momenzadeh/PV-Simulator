@@ -1,0 +1,21 @@
+version: '3'
+services:
+    broker:
+        image: rabbitmq:management-alpine
+        container_name: rabbitmq
+
+    pv_sim:
+        build: .
+        container_name: pv_sim
+        depends_on:
+            - broker
+        restart: on-failure
+        command: python pv/pv.py
+    meter_sim:
+        build: .
+        container_name: meter_sim
+        command: python meter/meter.py
+        restart: on-failure
+        depends_on:
+            - broker
+            - pv_sim
